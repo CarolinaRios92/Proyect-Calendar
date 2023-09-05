@@ -8,7 +8,7 @@ export default function Layout() {
   if (!session) {
     return (
       <div>
-        <NavBar session={session} />
+        <NavBar />
         <p>Por favor logueate para poder empezar a organizarte!</p>
         <button onClick={signIn}>Sign In</button>
       </div>

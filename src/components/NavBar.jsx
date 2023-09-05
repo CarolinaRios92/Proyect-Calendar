@@ -8,8 +8,14 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
+  DropdownMenu,
+  Dropdown,
+  DropdownTrigger,
+  Avatar,
+  DropdownItem,
+  User,
 } from "@nextui-org/react";
-import { useSession, signIn } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useState } from "react";
 
 export default function NavBar() {
@@ -17,10 +23,10 @@ export default function NavBar() {
   const { data: session } = useSession();
   console.log(session);
 
-  const menuItems = ["Dia", "Semana", "Mes", "Log Out"];
+  const menuItems = ["Dia", "Semana", "Mes"];
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen}>
+    <Navbar class="bg-primary" onMenuOpenChange={setIsMenuOpen}>
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -37,23 +43,30 @@ export default function NavBar() {
         </NavbarItem>
         <NavbarItem>
           {session && (
-            <div>
-              <img
-                className=""
-                src={session.user.image}
-                alt={session.user.name}
-              />
-              <p>{session.user.name}</p>
+            <div className="flex items-center gap-4">
+              <Dropdown placement="bottom-end">
+                <DropdownTrigger>
+                  <Avatar
+                    isBordered
+                    as="button"
+                    className="transition-transform"
+                    src={session.user.image}
+                  />
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Profile Actions" variant="flat">
+                  <DropdownItem key="profile" className="h-14 gap-2">
+                    <p class="text-sm">Ingresaste con</p>
+                    <p class="text-sm">{session.user.email}</p>
+                  </DropdownItem>
+                  <DropdownItem onClick={signOut}>
+                    <p class="text-sm text-red-600">Log Out</p>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </div>
           )}
           {!session && (
-            <Button
-              onClick={signIn}
-              as={Link}
-              color="primary"
-              href="#"
-              variant="flat"
-            >
+            <Button onClick={signIn} color="primary" variant="flat">
               Sign Up
             </Button>
           )}
@@ -63,7 +76,7 @@ export default function NavBar() {
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link className="w-full" href="#" size="lg">
-              {item}
+              <p class="text-black">{item}</p>
             </Link>
           </NavbarMenuItem>
         ))}
