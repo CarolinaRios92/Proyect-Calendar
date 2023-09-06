@@ -6,6 +6,9 @@ import ColorIcon from "./icons/ColorIcon";
 
 export default function EventForm() {
   const [color, setColor] = useState("#f70776");
+  const [inicialDate, setInicialDate] = useState("2023-09-06");
+
+  console.log(inicialDate);
   const colors = [
     { label: "Rojo", value: "#155263" },
     { label: "Rosa", value: "#f70776" },
@@ -43,6 +46,12 @@ export default function EventForm() {
             class={`border border-[${color}] rounded border-2 px-1`}
           />
         </div>
+        <input
+          type="date"
+          value={inicialDate}
+          min="2023-09-06"
+          max="2024-01-31"
+        />
       </form>
     </div>
   );
