@@ -3,34 +3,24 @@ import CheckIcon from "./icons/CheckIcon";
 import CancelIcon from "./icons/CancelIcon";
 import ColorIcon from "./icons/ColorIcon";
 import { useSession } from "next-auth/react";
+import axios from "axios";
 
 export default function EventForm() {
   const [color, setColor] = useState("#f70776");
+  const [title, setTitle] = useState("");
   const [inicialDate, setInicialDate] = useState("");
   const [finalDate, setFinalDate] = useState("");
   const [maxDate, setMaxDate] = useState("");
   const [reminder, setReminder] = useState(false);
   const [description, setDescription] = useState("");
   const { data: session } = useSession();
-  console.log(session.user.email);
+  const userEmail = session?.user.email;
 
   const colors = [
     { label: "Rojo", value: "#155263" },
     { label: "Rosa", value: "#f70776" },
     { label: "Azul", value: "#9896f1" },
   ];
-
-  const handleChangeInicialDate = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setInicialDate({ ...inicialDate, [name]: value });
-  };
-
-  const handleChangeFinalDate = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setFinalDate({ ...finalDate, [name]: value });
-  };
 
   useEffect(() => {
     var e = new Date(inicialDate.date);
@@ -54,15 +44,46 @@ export default function EventForm() {
     }
   }, [inicialDate]);
 
+  const handleChangeInicialDate = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setInicialDate({ ...inicialDate, [name]: value });
+  };
+
+  const handleChangeFinalDate = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setFinalDate({ ...finalDate, [name]: value });
+  };
+
   const handleCheckedReminder = () => {
     setReminder(!reminder);
   };
 
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const data = {
+      userEmail,
+      title,
+      color,
+      description,
+      inicial_date: inicialDate,
+      final_date: finalDate,
+      reminder,
+    };
+
+    await axios.post("/api/event", data);
+  }
+
   return (
     <div class="w-3/4 m-auto pt-3">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div class="flex gap-2 justify-end pb-2">
-          <button class="border border-green-500 rounded-full w-7 h-7">
+          <button
+            type="submit"
+            class="border border-green-500 rounded-full w-7 h-7"
+          >
             <CheckIcon width={24} height={24} classname={"m-auto"} />
           </button>
           <button class="border border-red-500 rounded-full w-7 h-7">
@@ -86,7 +107,9 @@ export default function EventForm() {
 
           <input
             type="text"
-            placeholder="Titulo"
+            placeholder="Titulo..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             class={`border border-[${color}] rounded border-2 px-1`}
           />
         </div>
