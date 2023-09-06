@@ -13,10 +13,11 @@ import {
   DropdownTrigger,
   Avatar,
   DropdownItem,
-  User,
 } from "@nextui-org/react";
 import { useSession, signIn, signOut } from "next-auth/react";
+import SearchIcon from "./icons/SearchIcon";
 import { useState } from "react";
+import CreateIcon from "./icons/CreateIcon";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,7 +44,17 @@ export default function NavBar() {
         </NavbarItem>
         <NavbarItem>
           {session && (
-            <div className="flex items-center gap-4">
+            <div class="flex gap-3 items-center">
+              <Link href="/event/new">
+                <button class="border border-gray-400 rounded-full w-8 h-8">
+                  <CreateIcon classname={"w-4 m-auto"} />
+                </button>
+              </Link>
+
+              <button class="border border-gray-400 rounded-full w-8 h-8">
+                <SearchIcon classname={"w-4 m-auto"} />
+              </button>
+
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
                   <Avatar
